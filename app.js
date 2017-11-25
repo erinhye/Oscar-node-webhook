@@ -59,6 +59,31 @@ app.post('/webhook', function(req, res) {
 
     }
 
+    else if(req.body.result.action == 'searching.deadline') {
+      var result = req.body.result;
+      var parameters = result.parameters;
+      var deadline = parameters.deadline;
+
+      if (deadline = 'until next Monday') {
+        speech = "the Task called "+tasktitle+" has been added";
+      }
+      else if (deadline = 'until next Tuesday') {
+        speech = "the Task called "+tasktitle+" with "+givenname+" has been added";
+      }
+      else {
+
+      }
+      return res.json({
+          speech: speech,
+          displayText: speech,
+          data: {'tasktitle':tasktitle,
+            'given-name':givenname,
+            'act':"add"},
+          source: 'apiai-Oscar'
+      });
+
+    }
+
     else {
       return res.json({
           speech: "speech",
