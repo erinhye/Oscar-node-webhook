@@ -38,7 +38,9 @@ var models = glob.sync(config.root + '/models/*.js');
 models.forEach(function (model) {
   require(model);
 });
-var groupModel = mongoose.model('groups');
+var groupModel = mongoose.model('groups'),
+    userModel = mongoose.model('users'),
+    taskModel = mongoose.model('tasks');
 
 const app = express();
 module.exports = require('./config/express')(app, config);
