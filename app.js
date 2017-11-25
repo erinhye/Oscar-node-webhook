@@ -34,12 +34,47 @@ app.get('/', (req, res) => {
 });
 
 app.post('/webhook', function(req, res) {
-    var speech = req.body.result && req.body.result.parameters && req.body.result.parameters.echoText ? req.body.result.parameters.echoText : "Seems like some problem. Speak again."
-    return res.json({
-        speech: speech,
-        displayText: speech,
-        source: 'webhook-echo-sample'
-    });
+    var speech = "";
+
+    if(req.body.result.action == 'task.add-yes') {
+      var result = req.body.result;
+      var parameters = result.parameters;
+      var givenname = parameters.givenname;
+      var tasktitle = parameters.tasktitle;
+
+      if (givenname = '') {
+        speech = "the Task called "+tasktitle+" has been added";
+      }
+      else {
+        speech = "the Task called "+tasktitle+" with "+givenname+" has been added";
+      }
+      return res.json({
+          speech: speech,
+          displayText: speech,
+          data: {'tasktitle':tasktitle,
+            'given-name':givenname,
+            'act':"add"},
+          source: 'apiai-Oscar'
+      });
+
+    }
+
+    else {
+      return res.json({
+          speech: "speech",
+          displayText: speech,
+          source: 'apiai-Oscar'
+      });
+
+    }
+
+
+    // var speech = req.body.result && req.body.result.parameters && req.body.result.parameters.echoText ? req.body.result.parameters.echoText : "Seems like some problem. Speak again."
+    // return res.json({
+    //     speech: speech,
+    //     displayText: speech,
+    //     source: 'webhook-echo-sample'
+    // });
 });
 
 // Start the server
