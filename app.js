@@ -18,9 +18,39 @@
 // [START app]
 const express = require('express');
 const bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var config = require('./config/config');
+var glob = require('glob');
 
+mongoose.Promise = global.Promise;
+var mongoDB = mongoose.connect(config.db, {
+  useMongoClient: true
+});
+mongoDB
+.then(function (db) {
+  console.log('mongodb has been connected');
+})
+.catch(function (err) {
+  console.log('error while trying to connect with mongodb');
+});
+
+var models = glob.sync(config.root + '/models/*.js');
+models.forEach(function (model) {
+  require(model);
+});
+var groupModel = mongoose.model('groups');
 
 const app = express();
+module.exports = require('./config/express')(app, config);
+
+groupModel.find({'email':'hjsuh01@gmail.com'}).sort({date:1}).exec(function(err, groupContents){
+             // db에서 날짜 순으로 데이터들을 가져옴
+        if(err) throw err;
+
+        console.log(groupContents);
+
+  });
+
 
 app.use(bodyParser.urlencoded({
     extended: true
