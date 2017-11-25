@@ -45,11 +45,16 @@ var groupModel = mongoose.model('groups'),
 const app = express();
 module.exports = require('./config/express')(app, config);
 
-groupModel.find({'email':'hjsuh01@gmail.com'}).sort({date:1}).exec(function(err, groupContents){
+taskModel.find({'email':'hyeerin@hye.com'}).sort({date:-1}).exec(function(err, Contents){
              // db에서 날짜 순으로 데이터들을 가져옴
         if(err) throw err;
 
-        console.log(groupContents);
+        console.log(Contents);
+
+        Contents.forEach(function(item, index){
+
+        console.log(Contents[index]['title']);
+      })
 
   });
 
