@@ -21,6 +21,7 @@ const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var config = require('./config/config');
 var glob = require('glob');
+var moment = require('moment');
 
 mongoose.Promise = global.Promise;
 var mongoDB = mongoose.connect(config.db, {
@@ -43,21 +44,41 @@ var groupModel = mongoose.model('groups'),
     taskModel = mongoose.model('tasks');
 
 const app = express();
-module.exports = require('./config/express')(app, config);
+// module.exports = require('./config/express')(app, config);
 
 taskModel.find({'email':'hyeerin@hye.com'}).sort({date:-1}).exec(function(err, Contents){
              // db에서 날짜 순으로 데이터들을 가져옴
         if(err) throw err;
 
-        console.log(Contents);
+        // console.log(Contents);
 
         Contents.forEach(function(item, index){
 
-        console.log(Contents[index]['title']);
+        // console.log(Contents[index]['title']);
       })
 
   });
 
+  //testing codes
+
+  var d = new Date();
+  var day = d.getDay(); // 0- sunday
+  console.log(day);
+
+  var momentemp = new Date().toISOString().slice(0,10);
+  console.log(momentemp);
+  var dltemp = moment(momentemp).add(8-day, 'days').toISOString().slice(0,10);
+  console.log(dltemp);
+  var email = 'hyeerin@hye.com';
+  //promise
+  findtasksbydl(dltemp, email);
+
+//   let start = moment('2017-01-15');
+// console.log(moment().add(7, 'days'));
+// console.log(start.add(7, 'days'));
+
+
+  //testing codes
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -72,6 +93,8 @@ app.get('/', (req, res) => {
 
 app.post('/webhook', function(req, res) {
     var speech = "";
+    var dltemp;
+    var momentemp;
 
     if(req.body.result.action == 'task.add-yes') {
       var result = req.body.result;
@@ -102,6 +125,14 @@ app.post('/webhook', function(req, res) {
       var deadline = parameters.deadline;
 
       if (deadline = 'until next Monday') {
+        var d = new Date();
+        var day = d.getDay(); // 0- sunday
+
+        momentemp = new Date().toISOString().slice(0,10);
+        dltemp = moment(momentemp, "DD-MM-YYYY").add(8-day, 'days').toISOString().slice(0,10);
+        //promise
+        findtasksbydl(dltemp, email);
+
         speech = "the Task called "+tasktitle+" has been added";
       }
       else if (deadline = 'until next Tuesday') {
@@ -138,6 +169,23 @@ app.post('/webhook', function(req, res) {
     //     source: 'webhook-echo-sample'
     // });
 });
+
+function findtasksbydl(dltemp, email) {
+
+  taskModel.find({'email':email, 'deadline':dltemp}).sort({date:-1}).exec(function(err, Contents){
+               // db에서 날짜 순으로 데이터들을 가져옴
+          if(err) throw err;
+
+          // console.log(Contents);
+          console.log("im here");
+
+          Contents.forEach(function(item, index){
+
+          console.log(Contents[index]['title']);
+        })
+
+    });
+}
 
 // Start the server
 const PORT = process.env.PORT || 8080;
