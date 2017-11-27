@@ -102,7 +102,7 @@ app.post('/webhook', function(req, res) {
       var givenname = parameters.givenname;
       var tasktitle = parameters.tasktitle;
 
-      if (givenname = '') {
+      if (givenname == "") {
         speech = "the Task called "+tasktitle+" has been added";
       }
       else {
