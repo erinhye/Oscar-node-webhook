@@ -9,7 +9,7 @@ var config = {
       name: 'user'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/user-development'
+    db: 'mongodb://erinhye:hyehye@127.0.0.1:27071/user-development'
   },
 
   test: {

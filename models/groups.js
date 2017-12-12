@@ -15,7 +15,8 @@ var groupsSchema = new Schema({
   date: {
     type: Date,
     default: Date.now()
-  }
+  },
+  deleted: {type: Boolean, default: false}
 });
 
 mongoose.model('groups', groupsSchema);
